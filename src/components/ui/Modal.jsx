@@ -102,9 +102,8 @@ export function Modal({ isOpen, onClose, title, children, size = 'lg' }) {
       <div
         ref={contentRef}
         className={clsx(
-          'relative w-full bg-white rounded-2xl',
+          'relative flex max-h-[90vh] w-full flex-col overflow-hidden rounded-2xl bg-white',
           'shadow-[var(--shadow-modal),0_0_0_1px_rgb(15_23_42/0.06)]',
-          'max-h-[90vh] flex flex-col',
           'animate-[slideUp_0.2s_ease]',
           SIZE_CLASSES[size],
         )}
