@@ -17,11 +17,13 @@ export default function App() {
 
   return (
     <div style={{
-      minHeight: '100vh',
+      height: '100%',
+      minHeight: 0,
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: '#f8fafc',
       width: '100%',
+      overflow: 'hidden',
     }}>
 
       <header style={{
@@ -163,18 +165,27 @@ export default function App() {
           />
         </div>
 
-        <PaymentsTable
-          payments={payments}
-          isLoading={isLoading}
-          error={error}
-          sort={sort}
-          onSort={setSort}
-          onView={setSelectedPaymentId}
-          onRetry={refetch}
-          pagination={pagination}
-          onPageChange={setPage}
-          onRowsPerPageChange={setRowsPerPage}
-        />
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <PaymentsTable
+            payments={payments}
+            isLoading={isLoading}
+            error={error}
+            sort={sort}
+            onSort={setSort}
+            onView={setSelectedPaymentId}
+            onRetry={refetch}
+            pagination={pagination}
+            onPageChange={setPage}
+            onRowsPerPageChange={setRowsPerPage}
+          />
+        </div>
 
       </main>
 

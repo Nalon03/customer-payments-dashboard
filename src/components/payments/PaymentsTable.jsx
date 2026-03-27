@@ -1,3 +1,4 @@
+import { useRef, useCallback } from 'react'
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { PaymentRow }  from './PaymentRow'
 import { EmptyState }  from '../ui/EmptyState'
@@ -9,6 +10,70 @@ const BORDER = '#e2e8f0'
 const MUTED = '#94a3b8'
 const TEXT = '#475569'
 const FOOTER_BG = '#fafafa'
+
+const TABLE_FIXED = {
+  width: '100%',
+  minWidth: '880px',
+  tableLayout: 'fixed',
+  borderCollapse: 'separate',
+  borderSpacing: 0,
+  textAlign: 'left',
+}
+
+function TableColGroup() {
+  return (
+    <colgroup>
+      <col style={{ width: '12%' }} />
+      <col style={{ width: '26%' }} />
+      <col style={{ width: '14%' }} />
+      <col style={{ width: '14%' }} />
+      <col style={{ width: '12%' }} />
+      <col style={{ width: '22%' }} />
+    </colgroup>
+  )
+}
+
+function HeaderRow({ sort, onSort }) {
+  return (
+    <tr>
+      {PAYMENT_COLUMNS.map((col) => (
+        <th
+          key={col.key}
+          scope="col"
+          onClick={col.sortable ? () => onSort(col.key) : undefined}
+          className={col.sortable ? 'group' : ''}
+          style={{
+            padding: '13px 14px',
+            fontSize: '12px',
+            fontWeight: 600,
+            color: 'rgba(255,255,255,0.65)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.055em',
+            whiteSpace: 'nowrap',
+            userSelect: 'none',
+            cursor: col.sortable ? 'pointer' : 'default',
+            textAlign: col.key === 'actions' ? 'right' : 'left',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            transition: 'color 0.15s',
+            backgroundColor: BRAND,
+            borderBottom: '1px solid rgba(0,0,0,0.2)',
+          }}
+          onMouseEnter={(e) => {
+            if (col.sortable) e.currentTarget.style.color = 'white'
+          }}
+          onMouseLeave={(e) => {
+            if (col.sortable) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'
+          }}
+        >
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            {col.label}
+            {col.sortable && <SortIcon columnKey={col.key} sort={sort} />}
+          </span>
+        </th>
+      ))}
+    </tr>
+  )
+}
 
 /**
  * Builds page numbers (and ellipsis markers) for the pager control.
@@ -108,6 +173,21 @@ export function PaymentsTable({
 
   const pageItems = buildPageItems(currentPage, totalPages)
 
+  const headScrollRef = useRef(null)
+  const bodyScrollRef = useRef(null)
+
+  const syncHeadFromBody = useCallback((e) => {
+    const left = e.currentTarget.scrollLeft
+    const head = headScrollRef.current
+    if (head && head.scrollLeft !== left) head.scrollLeft = left
+  }, [])
+
+  const syncBodyFromHead = useCallback((e) => {
+    const left = e.currentTarget.scrollLeft
+    const body = bodyScrollRef.current
+    if (body && body.scrollLeft !== left) body.scrollLeft = left
+  }, [])
+
   function goFirst() {
     if (currentPage <= 1) return
     onPageChange?.(1)
@@ -129,14 +209,16 @@ export function PaymentsTable({
   }
 
   const showTableEmpty = !isLoading && !error && payments.length === 0
+  /** Same idea as empty state: no bordered white panel while data is loading. */
+  const showTableCard = !(isLoading && !error)
 
   if (showTableEmpty) {
     return (
       <div
         style={{
           flex: 1,
+          minHeight: 0,
           width: '100%',
-          minHeight: 'min(480px, calc(100vh - 272px))',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -151,14 +233,30 @@ export function PaymentsTable({
 
   return (
     <div style={{
-      backgroundColor: 'white',
-      borderRadius: '8px',
-      border: `1px solid ${BORDER}`,
+      flex: 1,
+      minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
       overflow: 'hidden',
-      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+      ...(showTableCard
+        ? {
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            border: `1px solid ${BORDER}`,
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+          }
+        : {
+            backgroundColor: 'transparent',
+            borderRadius: 0,
+            border: 'none',
+            boxShadow: 'none',
+          }),
     }}>
 
+      {showTableCard && (
       <div className="sm:hidden" style={{
+        flexShrink: 0,
         padding: '6px 12px',
         borderBottom: '1px solid #f1f5f9',
         fontSize: '11px',
@@ -168,73 +266,68 @@ export function PaymentsTable({
       }}>
         Scroll horizontally to see all columns
       </div>
+      )}
 
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              textAlign: 'left',
-            }}>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          ref={headScrollRef}
+          onScroll={syncBodyFromHead}
+          style={{
+            flexShrink: 0,
+            overflowX: 'auto',
+            overflowY: 'hidden',
+          }}
+        >
+          <table style={TABLE_FIXED}>
+            <TableColGroup />
+            <thead>
+              <HeaderRow sort={sort} onSort={onSort} />
+            </thead>
+          </table>
+        </div>
 
-              <thead>
-                <tr style={{ backgroundColor: BRAND }}>
-                  {PAYMENT_COLUMNS.map((col) => (
-                    <th
-                      key={col.key}
-                      scope="col"
-                      onClick={col.sortable ? () => onSort(col.key) : undefined}
-                      className={col.sortable ? 'group' : ''}
-                      style={{
-                        padding: '13px 14px',
-                        fontSize: '12px',
-                        fontWeight: 600,
-                        color: 'rgba(255,255,255,0.65)',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.055em',
-                        whiteSpace: 'nowrap',
-                        userSelect: 'none',
-                        cursor: col.sortable ? 'pointer' : 'default',
-                        textAlign: col.key === 'actions' ? 'right' : 'left',
-                        fontFamily: 'Inter, system-ui, sans-serif',
-                        transition: 'color 0.15s',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (col.sortable) e.currentTarget.style.color = 'white'
-                      }}
-                      onMouseLeave={(e) => {
-                        if (col.sortable) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'
-                      }}
-                    >
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                        {col.label}
-                        {col.sortable && <SortIcon columnKey={col.key} sort={sort} />}
-                      </span>
-                    </th>
-                  ))}
+        <div
+          ref={bodyScrollRef}
+          onScroll={syncHeadFromBody}
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
+          }}
+        >
+          <table style={TABLE_FIXED}>
+            <TableColGroup />
+            <tbody>
+              {isLoading ? (
+                <SkeletonRows rows={Math.min(rowsPerPage, 20)} cols={PAYMENT_COLUMNS.length} />
+              ) : error ? (
+                <tr>
+                  <td colSpan={PAYMENT_COLUMNS.length} style={{ padding: 0 }}>
+                    <ErrorState message={error} onRetry={onRetry} />
+                  </td>
                 </tr>
-              </thead>
-
-              <tbody>
-                {isLoading ? (
-                  <SkeletonRows rows={6} cols={PAYMENT_COLUMNS.length} />
-                ) : error ? (
-                  <tr>
-                    <td colSpan={PAYMENT_COLUMNS.length} style={{ padding: 0 }}>
-                      <ErrorState message={error} onRetry={onRetry} />
-                    </td>
-                  </tr>
-                ) : (
-                  payments.map((payment, i) => (
-                    <PaymentRow
-                      key={payment.PaymentId}
-                      payment={payment}
-                      index={i}
-                      onView={onView}
-                    />
-                  ))
-                )}
-              </tbody>
-        </table>
+              ) : (
+                payments.map((payment, i) => (
+                  <PaymentRow
+                    key={payment.PaymentId}
+                    payment={payment}
+                    index={i}
+                    onView={onView}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {!isLoading && !error && totalCount > 0 && (
@@ -242,6 +335,7 @@ export function PaymentsTable({
           role="navigation"
           aria-label="Table pagination"
           style={{
+            flexShrink: 0,
             padding: '10px 12px',
             borderTop: '1px solid #f1f5f9',
             backgroundColor: FOOTER_BG,

@@ -29,25 +29,21 @@ export function PaymentDetailModal({ paymentId, onClose }) {
     >
       {isLoading && (
         <div
-          className="flex min-h-[min(340px,55vh)] items-center justify-center px-4 py-8"
+          className="flex min-h-[min(340px,55vh)] flex-col items-center justify-center gap-5 px-4 py-10 text-center"
           role="status"
           aria-live="polite"
           aria-busy="true"
+          style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
         >
           <div
-            className="w-full max-w-md rounded-xl border border-neutral-200 bg-white px-10 py-12 text-center shadow-sm"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+            className="flex h-16 w-16 items-center justify-center rounded-full
+                       border border-brand-200 bg-brand-50"
           >
-            <div
-              className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full
-                         border border-brand-200 bg-brand-50"
-            >
-              <Spinner size="lg" label="Loading payment details" />
-            </div>
-            <p className="text-[15px] font-semibold text-neutral-800">
-              Loading payment details
-            </p>
+            <Spinner size="lg" label="Loading payment details" />
           </div>
+          <p className="text-[17px] font-semibold text-neutral-800">
+            Loading payment details
+          </p>
         </div>
       )}
 
@@ -103,7 +99,6 @@ function Section({ title, icon, children }) {
   )
 }
 
-/** True for null, undefined, or blank strings so the UI shows an em dash instead of empty space. */
 function isDetailValueEmpty(value) {
   if (value === null || value === undefined) return true
   if (typeof value === 'string' && value.trim() === '') return true
