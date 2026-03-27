@@ -1,36 +1,48 @@
+import { parseCalendarYmd } from './dateParse'
+
 /**
- * Formats an ISO date string into a human-readable short date.
- * @param {string} dateStr - ISO 8601 date string
- * @returns {string} e.g. "24 Mar 2026"
- */
+  */
 export function formatDate(dateStr) {
-    if (!dateStr) return '—'
+  if (!dateStr) return '—'
+  const cal = parseCalendarYmd(dateStr)
+  if (cal) {
     return new Intl.DateTimeFormat('en-GB', {
-      day:   '2-digit',
+      day: '2-digit',
       month: 'short',
-      year:  'numeric',
-    }).format(new Date(dateStr))
+      year: 'numeric',
+    }).format(new Date(cal.y, cal.m - 1, cal.d))
   }
-  
-  /**
-   * Formats a numeric amount as GHS currency.
-   * @param {number} amount
-   * @returns {string} e.g. "GHS 1,250.00"
-   */
-  export function formatCurrency(amount) {
-    if (amount == null) return '—'
-    return new Intl.NumberFormat('en-GH', {
-      style:    'currency',
-      currency: 'GHS',
-    }).format(amount)
+  return new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(dateStr))
+}
+
+/**
+ * Formats a numeric amount as GHS currency.
+ */
+export function formatCurrency(amount) {
+  if (amount == null) return '—'
+  return new Intl.NumberFormat('en-GH', {
+    style: 'currency',
+    currency: 'GHS',
+  }).format(amount)
+}
+
+/**
+ */
+export function toInputDate(dateStr) {
+  const cal = parseCalendarYmd(dateStr)
+  if (cal) {
+    const mm = String(cal.m).padStart(2, '0')
+    const dd = String(cal.d).padStart(2, '0')
+    return `${cal.y}-${mm}-${dd}`
   }
-  
-  /**
-   * Formats an ISO date string to YYYY-MM-DD for use in date input values.
-   * @param {string} dateStr
-   * @returns {string} e.g. "2026-03-24"
-   */
-  export function toInputDate(dateStr) {
-    if (!dateStr) return ''
+  if (!dateStr) return ''
+  try {
     return new Date(dateStr).toISOString().split('T')[0]
+  } catch {
+    return ''
   }
+}

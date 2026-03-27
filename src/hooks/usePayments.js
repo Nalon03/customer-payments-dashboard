@@ -53,6 +53,11 @@ export function usePayments() {
   useLayoutEffect(() => {
     setUiPage(1)
     setRowsPerPage(ROWS_PER_PAGE_OPTIONS[0])
+    if (filters.startDate || filters.endDate) {
+      setSort({ key: 'PaymentDate', direction: 'asc' })
+    } else {
+      setSort(DEFAULT_SORT)
+    }
   }, [filters.startDate, filters.endDate])
 
   useLayoutEffect(() => {

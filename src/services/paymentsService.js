@@ -1,6 +1,15 @@
 import apiClient from './apiClient'
 import { ENDPOINTS } from '../constants/api'
 
+/** Inclusive local calendar bounds so same-day payments are not dropped at API boundaries. */
+function toApiStartDate(ymd) {
+  return `${ymd}T00:00:00.000`
+}
+
+function toApiEndDate(ymd) {
+  return `${ymd}T23:59:59.999`
+}
+
 /**
  * Live API returns up to this many rows per request (smaller `PageSize` is ignored).
  * UI pagination uses smaller `rowsPerPage` and only refetches when this chunk changes.
@@ -54,8 +63,8 @@ export async function fetchPayments({
     PageNumber: pageNumber,
     PageSize: pageSize,
   }
-  if (startDate) params.StartDate = startDate
-  if (endDate) params.EndDate = endDate
+  if (startDate) params.StartDate = toApiStartDate(startDate)
+  if (endDate) params.EndDate = toApiEndDate(endDate)
   if (searchQuery) params.SearchQuery = searchQuery
 
   const response = await apiClient.get(ENDPOINTS.payments, { params })
