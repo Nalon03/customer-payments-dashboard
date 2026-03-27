@@ -36,37 +36,43 @@
   --shadow-modal: 0 24px 64px -12px rgb(0 0 0 / 0.22);
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/*
+ * Reset lives in @layer base so Tailwind utilities (e.g. px-*, py-*) keep precedence.
+ * An unlayered global reset after @import "tailwindcss" would override those utilities.
+ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-html,
-body,
-#root {
-  width: 100%;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-}
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
 
-html {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  background-color: #f8fafc;
-  color: #0f172a;
-}
+  body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
 
-#root {
-  display: flex;
-  flex-direction: column;
+  #root {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 :focus-visible {

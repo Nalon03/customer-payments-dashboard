@@ -11,8 +11,7 @@ const apiClient = axios.create({
 })
 
 /**
- * Maps failed requests to short, user-facing copy (similar tone to common
- * cloud product error pages) while preserving server-supplied messages when present.
+ * Turns HTTP/network failures into short, user-facing messages; uses the server body when it includes a message or title.
  */
 function userFacingErrorMessage(error) {
   const status = error.response?.status

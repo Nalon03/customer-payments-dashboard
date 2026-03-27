@@ -14,6 +14,8 @@ const SIZES = {
 }
 
 /**
+ * Native `<button>` with brand-aligned variants and sizes.
+ *
  * @param {{
  *   variant?: keyof VARIANTS,
  *   size?: keyof SIZES,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { fetchPaymentById } from '../services/paymentsService'
 
 /**
@@ -10,12 +10,18 @@ import { fetchPaymentById } from '../services/paymentsService'
  *   detail: object|null,
  *   isLoading: boolean,
  *   error: string|null,
+ *   refetch: () => void,
  * }}
  */
 export function usePaymentDetail(paymentId) {
   const [detail,    setDetail]    = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error,     setError]     = useState(null)
+  const [reloadToken, setReloadToken] = useState(0)
+
+  const refetch = useCallback(() => {
+    setReloadToken((t) => t + 1)
+  }, [])
 
   useEffect(() => {
     if (!paymentId) {
@@ -45,7 +51,7 @@ export function usePaymentDetail(paymentId) {
     load()
 
     return () => { cancelled = true }
-  }, [paymentId])
+  }, [paymentId, reloadToken])
 
-  return { detail, isLoading, error }
+  return { detail, isLoading, error, refetch }
 }

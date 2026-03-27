@@ -1,4 +1,3 @@
-// src/components/payments/FilterBar.jsx
 import { Search, X } from 'lucide-react'
 
 export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRange }) {
@@ -16,29 +15,27 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
   const hasAnyFilter = filters.startDate || filters.endDate || filters.search
 
   return (
-    <div style={{ marginBottom: '16px' }}>
+    <div style={{ marginBottom: '12px' }}>
 
-      {/* Main filter bar */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         backgroundColor: 'white',
         border: '1px solid #e2e8f0',
-        borderRadius: '10px',
+        borderRadius: '8px',
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
         overflow: 'hidden',
         flexWrap: 'wrap',
       }}>
 
-        {/* Search */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: '8px',
           flex: 1,
           minWidth: '200px',
-          padding: '0 16px',
-          height: '46px',
+          padding: '0 12px',
+          height: '42px',
           borderRight: '1px solid #f1f5f9',
         }}>
           <Search size={14} color="#94a3b8" strokeWidth={1.75} style={{ flexShrink: 0 }} />
@@ -59,13 +56,12 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
           />
         </div>
 
-        {/* Date range */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '0 16px',
-          height: '46px',
+          padding: '0 12px',
+          height: '42px',
           flexWrap: 'wrap',
         }}>
 
@@ -139,7 +135,6 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
             }}
           />
 
-          {/* Clear */}
           {hasAnyFilter && (
             <>
               <span style={{
@@ -175,21 +170,14 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
         </div>
       </div>
 
-      {/* Active filter chips */}
-      {hasAnyFilter && (
+      {(filters.startDate || filters.endDate) && (
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '6px',
-          marginTop: '8px',
-          paddingLeft: '2px',
+          gap: '5px',
+          marginTop: '6px',
+          paddingLeft: '0',
         }}>
-          {filters.search && (
-            <Chip
-              label={`"${filters.search}"`}
-              onRemove={() => onFiltersChange({ search: '' })}
-            />
-          )}
           {filters.startDate && (
             <Chip
               label={`From: ${filters.startDate}`}
@@ -214,8 +202,8 @@ function Chip({ label, onRemove }) {
       display: 'inline-flex',
       alignItems: 'center',
       gap: '4px',
-      height: '24px',
-      padding: '0 10px',
+      height: '22px',
+      padding: '0 8px',
       borderRadius: '99px',
       backgroundColor: '#e0f0dc',
       border: '1px solid #b8ddb2',

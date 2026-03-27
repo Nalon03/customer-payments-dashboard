@@ -47,7 +47,7 @@ export function Modal({ isOpen, onClose, title, children, size = 'lg' }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [isOpen, onClose])
 
-  // Cycle Tab / Shift+Tab within the dialog so focus never lands on the obscured page.
+  // Focus trap: keep Tab / Shift+Tab inside the dialog so focus cannot move to the page behind the overlay.
   const trapFocus = useCallback((e) => {
     if (e.key !== 'Tab' || !contentRef.current) return
 
@@ -102,33 +102,37 @@ export function Modal({ isOpen, onClose, title, children, size = 'lg' }) {
       <div
         ref={contentRef}
         className={clsx(
-          'relative w-full bg-white rounded-xl shadow-modal',
+          'relative w-full bg-white rounded-2xl',
+          'shadow-[var(--shadow-modal),0_0_0_1px_rgb(15_23_42/0.06)]',
           'max-h-[90vh] flex flex-col',
           'animate-[slideUp_0.2s_ease]',
           SIZE_CLASSES[size],
         )}
       >
-        <div className="flex items-center justify-between px-6 py-4
-                        border-b border-neutral-200 shrink-0">
+        <div
+          className="flex min-h-[3.75rem] shrink-0 items-center justify-between gap-6 border-b border-neutral-200/90 bg-white px-6 pt-5 pb-4 sm:px-8 sm:pt-6 sm:pb-5 md:px-10 md:pt-7 md:pb-6"
+        >
           <h2
             id="modal-title"
-            className="text-base font-semibold text-neutral-900"
+            className="pr-2 text-xl font-semibold leading-snug text-neutral-900 tracking-tight"
           >
             {title}
           </h2>
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1.5 rounded-md text-neutral-400
-                       hover:bg-neutral-100 hover:text-neutral-700
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg
+                       border border-neutral-200 bg-white text-neutral-600
+                       hover:bg-neutral-50 hover:text-neutral-900 active:bg-neutral-100
                        transition-colors focus-visible:outline-none
-                       focus-visible:ring-2 focus-visible:ring-brand-500"
+                       focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
-            <X size={18} />
+            <X size={20} strokeWidth={2} aria-hidden />
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto bg-neutral-50/50 px-6 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10 lg:px-12 lg:py-10">
           {children}
         </div>
       </div>

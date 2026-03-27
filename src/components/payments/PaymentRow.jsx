@@ -1,4 +1,3 @@
-// src/components/payments/PaymentRow.jsx
 import { useState }       from 'react'
 import { Eye }            from 'lucide-react'
 import { Badge }          from '../ui/Badge'
@@ -19,8 +18,7 @@ export function PaymentRow({ payment, onView, index }) {
         transition: 'background-color 0.1s',
       }}
     >
-      {/* Payment # */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
         <span style={{
           fontSize: '12px',
           fontFamily: '"JetBrains Mono", "Fira Code", "Courier New", monospace',
@@ -32,12 +30,11 @@ export function PaymentRow({ payment, onView, index }) {
         </span>
       </td>
 
-      {/* Customer */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
-            width: '28px',
-            height: '28px',
+            width: '26px',
+            height: '26px',
             borderRadius: '50%',
             backgroundColor: '#e0f0dc',
             color: '#254F22',
@@ -62,8 +59,7 @@ export function PaymentRow({ payment, onView, index }) {
         </div>
       </td>
 
-      {/* Amount */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
         <span style={{
           fontSize: '13px',
           fontWeight: 600,
@@ -75,8 +71,7 @@ export function PaymentRow({ payment, onView, index }) {
         </span>
       </td>
 
-      {/* Date */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
         <span style={{
           fontSize: '13px',
           color: '#64748b',
@@ -87,24 +82,22 @@ export function PaymentRow({ payment, onView, index }) {
         </span>
       </td>
 
-      {/* Status */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
         {payment.Status != null
           ? <Badge variant={variant}>{label}</Badge>
           : <span style={{ color: '#e2e8f0' }}>—</span>
         }
       </td>
 
-      {/* View */}
-      <td style={{ padding: '14px 16px', whiteSpace: 'nowrap', textAlign: 'right' }}>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', textAlign: 'right' }}>
         <button
           onClick={() => onView(payment.PaymentId)}
           aria-label={`View details for ${payment.PaymentNumber}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
+            gap: '5px',
+            padding: '5px 10px',
             borderRadius: '6px',
             fontSize: '12px',
             fontWeight: 500,

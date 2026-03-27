@@ -14,9 +14,9 @@ export function ErrorState({
   onRetry,
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-12 h-12 rounded-full bg-danger-bg flex items-center justify-center mb-4">
-        <AlertTriangle size={22} className="text-danger-text" />
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="w-11 h-11 rounded-full bg-danger-bg flex items-center justify-center mb-3">
+        <AlertTriangle size={20} className="text-danger-text" />
       </div>
       <p className="text-sm font-medium text-neutral-700">Unable to load data</p>
       <p className="text-xs text-neutral-400 mt-1 max-w-xs">{message}</p>
@@ -25,7 +25,7 @@ export function ErrorState({
           variant="secondary"
           size="sm"
           onClick={onRetry}
-          className="mt-4"
+          className="mt-3"
         >
           Try again
         </Button>
