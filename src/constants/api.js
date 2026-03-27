@@ -1,6 +1,5 @@
-// Central location for all API-related constants.
-
-export const API_BASE_URL = 'https://spes.pscgh.com:442/sales-api/api'
+/** Base URL and path templates for the payments API. */
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
 
 export const ENDPOINTS = {
   payments: '/Payments',

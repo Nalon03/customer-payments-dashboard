@@ -1,6 +1,3 @@
-// All requests go through here, ensuring consistent base URL,
-// timeout, and error handling in one place.
-
 import axios from 'axios'
 import { API_BASE_URL } from '../constants/api'
 
@@ -13,9 +10,7 @@ const apiClient = axios.create({
   },
 })
 
-
-/**Response Interceptor **/
-
+/** Normalises failed responses into `Error` with a safe `.message` for the UI. */
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

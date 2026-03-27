@@ -1,6 +1,7 @@
-// Maps raw numeric Status values from the API to human-readable
-
-/** @type {Record<number, { label: string, variant: 'success'|'warning'|'danger'|'info' }>} */
+/**
+ * Numeric payment status codes from the API → display label and `Badge` variant.
+ * @type {Record<number, { label: string, variant: 'success'|'warning'|'danger'|'info' }>}
+ */
 export const STATUS_MAP = {
     1: { label: 'Completed', variant: 'success' },
     2: { label: 'Pending',   variant: 'warning' },

@@ -1,5 +1,3 @@
-// All date and currency display logic lives here, keeping components clean.
-
 /**
  * Formats an ISO date string into a human-readable short date.
  * @param {string} dateStr - ISO 8601 date string
