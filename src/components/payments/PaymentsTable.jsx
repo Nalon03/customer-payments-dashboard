@@ -1,3 +1,4 @@
+// src/components/payments/PaymentsTable.jsx
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { clsx }        from 'clsx'
 import { PaymentRow }  from './PaymentRow'
@@ -9,8 +10,8 @@ function SortIcon({ columnKey, sort }) {
   const isActive = sort.key === columnKey
   if (isActive) {
     return sort.direction === 'asc'
-      ? <ChevronUp   size={12} className="text-white" strokeWidth={2.5} />
-      : <ChevronDown size={12} className="text-white" strokeWidth={2.5} />
+      ? <ChevronUp   size={12} color="white" strokeWidth={2.5} />
+      : <ChevronDown size={12} color="white" strokeWidth={2.5} />
   }
   return (
     <ChevronsUpDown
@@ -23,12 +24,17 @@ function SortIcon({ columnKey, sort }) {
 
 function SkeletonRows({ rows = 6, cols = 6 }) {
   return Array.from({ length: rows }, (_, r) => (
-    <tr key={r} className="border-b border-neutral-100">
+    <tr key={r} style={{ borderBottom: '1px solid #f1f5f9' }}>
       {Array.from({ length: cols }, (_, c) => (
-        <td key={c} className="px-4 py-3.5">
+        <td key={c} style={{ padding: '14px 16px' }}>
           <div
-            className="h-4 bg-neutral-100 rounded animate-pulse"
-            style={{ width: `${[55, 75, 50, 60, 45, 35][c] ?? 55}%` }}
+            className="animate-pulse"
+            style={{
+              height: '14px',
+              backgroundColor: '#f1f5f9',
+              borderRadius: '4px',
+              width: `${[55, 75, 50, 60, 45, 35][c] ?? 55}%`,
+            }}
           />
         </td>
       ))}
@@ -41,57 +47,85 @@ export function PaymentsTable({
   sort, onSort, onView, onRetry,
 }) {
   return (
-    <div
-      className="bg-white rounded-xl border border-neutral-200 overflow-hidden"
-      style={{ boxShadow: '0 1px 4px rgb(0 0 0 / 0.06)' }}
-    >
-      <div className="sm:hidden px-4 py-2 border-b border-neutral-100
-                      text-xs text-neutral-400 text-center">
+    <div style={{
+      backgroundColor: 'white',
+      borderRadius: '12px',
+      border: '1px solid #e2e8f0',
+      overflow: 'hidden',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+    }}>
+
+      {/* Mobile hint */}
+      <div className="sm:hidden" style={{
+        padding: '8px 16px',
+        borderBottom: '1px solid #f1f5f9',
+        fontSize: '11px',
+        color: '#94a3b8',
+        textAlign: 'center',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
         Scroll horizontally to see all columns
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-left">
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          textAlign: 'left',
+        }}>
 
+          {/* Header */}
           <thead>
-            <tr style={{ background: '#254F22' }}>
+            <tr style={{ backgroundColor: '#254F22' }}>
               {PAYMENT_COLUMNS.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
                   onClick={col.sortable ? () => onSort(col.key) : undefined}
-                  className={clsx(
-                    'px-4 py-3',
-                    'text-[11px] font-semibold tracking-widest uppercase',
-                    'text-white/70 whitespace-nowrap select-none',
-                    col.sortable &&
-                      'cursor-pointer hover:text-white transition-colors group',
-                    col.key === 'actions' && 'text-right',
-                  )}
+                  className={col.sortable ? 'group' : ''}
+                  style={{
+                    padding: '12px 16px',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    color: 'rgba(255,255,255,0.65)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    whiteSpace: 'nowrap',
+                    userSelect: 'none',
+                    cursor: col.sortable ? 'pointer' : 'default',
+                    textAlign: col.key === 'actions' ? 'right' : 'left',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    transition: 'color 0.15s',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (col.sortable) e.currentTarget.style.color = 'white'
+                  }}
+                  onMouseLeave={(e) => {
+                    if (col.sortable) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'
+                  }}
                 >
-                  <span className="inline-flex items-center gap-1.5">
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                     {col.label}
-                    {col.sortable && (
-                      <SortIcon columnKey={col.key} sort={sort} />
-                    )}
+                    {col.sortable && <SortIcon columnKey={col.key} sort={sort} />}
                   </span>
                 </th>
               ))}
             </tr>
           </thead>
 
+          {/* Body */}
           <tbody>
             {isLoading ? (
               <SkeletonRows rows={6} cols={PAYMENT_COLUMNS.length} />
             ) : error ? (
               <tr>
-                <td colSpan={PAYMENT_COLUMNS.length} className="p-0">
+                <td colSpan={PAYMENT_COLUMNS.length} style={{ padding: 0 }}>
                   <ErrorState message={error} onRetry={onRetry} />
                 </td>
               </tr>
             ) : payments.length === 0 ? (
               <tr>
-                <td colSpan={PAYMENT_COLUMNS.length} className="p-0">
+                <td colSpan={PAYMENT_COLUMNS.length} style={{ padding: 0 }}>
                   <EmptyState />
                 </td>
               </tr>
@@ -109,15 +143,21 @@ export function PaymentsTable({
         </table>
       </div>
 
+      {/* Footer */}
       {!isLoading && !error && payments.length > 0 && (
-        <div className="px-4 py-3 border-t border-neutral-100 bg-neutral-50/60">
-          <span className="text-xs text-neutral-400 tabular-nums">
-            Showing{' '}
-            <span className="font-medium text-neutral-600">
-              {payments.length}
-            </span>
-            {' '}record{payments.length !== 1 ? 's' : ''}
+        <div style={{
+          padding: '12px 16px',
+          borderTop: '1px solid #f1f5f9',
+          backgroundColor: '#fafafa',
+          fontSize: '12px',
+          color: '#94a3b8',
+          fontFamily: 'Inter, system-ui, sans-serif',
+        }}>
+          Showing{' '}
+          <span style={{ fontWeight: 500, color: '#475569' }}>
+            {payments.length}
           </span>
+          {' '}record{payments.length !== 1 ? 's' : ''}
         </div>
       )}
     </div>

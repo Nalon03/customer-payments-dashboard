@@ -1,93 +1,171 @@
+// src/components/payments/FilterBar.jsx
 import { Search, X } from 'lucide-react'
-import { clsx }      from 'clsx'
 
-export function FilterBar({ filters, isLoading, onFiltersChange }) {
+export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRange }) {
 
   function handleDateChange(field, value) {
     onFiltersChange({ [field]: value })
+    onApplyDateRange()
   }
 
   function handleClearAll() {
     onFiltersChange({ startDate: '', endDate: '', search: '' })
+    onApplyDateRange()
   }
 
   const hasAnyFilter = filters.startDate || filters.endDate || filters.search
 
   return (
-    <div className="mb-4">
-      <div
-        className="flex flex-col sm:flex-row sm:items-center gap-0
-                   bg-white border border-neutral-200 rounded-xl overflow-hidden"
-        style={{ boxShadow: '0 1px 2px rgb(0 0 0 / 0.04)' }}
-      >
-        <div className="flex items-center gap-2.5 flex-1 min-w-0 px-4 py-3">
-          <Search size={14} className="text-neutral-400 shrink-0" strokeWidth={1.75} />
+    <div style={{ marginBottom: '16px' }}>
+
+      {/* Main filter bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        border: '1px solid #e2e8f0',
+        borderRadius: '10px',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        overflow: 'hidden',
+        flexWrap: 'wrap',
+      }}>
+
+        {/* Search */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          flex: 1,
+          minWidth: '200px',
+          padding: '0 16px',
+          height: '46px',
+          borderRight: '1px solid #f1f5f9',
+        }}>
+          <Search size={14} color="#94a3b8" strokeWidth={1.75} style={{ flexShrink: 0 }} />
           <input
             type="search"
             placeholder="Search payments…"
             value={filters.search}
             onChange={(e) => onFiltersChange({ search: e.target.value })}
-            className="flex-1 min-w-0 text-sm bg-transparent border-0
-                       outline-none text-neutral-800 placeholder:text-neutral-400"
+            style={{
+              flex: 1,
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontSize: '13px',
+              color: '#1e293b',
+              fontFamily: 'Inter, system-ui, sans-serif',
+            }}
           />
         </div>
 
-        <div className="hidden sm:block w-px self-stretch bg-neutral-100" />
+        {/* Date range */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '0 16px',
+          height: '46px',
+          flexWrap: 'wrap',
+        }}>
 
-        <div className="flex items-center gap-3 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400 font-medium whitespace-nowrap">
-              From
-            </span>
-            <input
-              type="date"
-              value={filters.startDate}
-              max={filters.endDate || undefined}
-              disabled={isLoading}
-              onChange={(e) => handleDateChange('startDate', e.target.value)}
-              aria-label="Start date"
-              className={clsx(
-                'text-sm bg-transparent border-0 outline-none cursor-pointer',
-                'disabled:opacity-40 disabled:cursor-not-allowed',
-                filters.startDate
-                  ? 'text-brand-700 font-medium'
-                  : 'text-neutral-400',
-              )}
-            />
-          </div>
+          <span style={{
+            fontSize: '11px',
+            fontWeight: 500,
+            color: '#94a3b8',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+          }}>
+            From
+          </span>
 
-          <span className="text-neutral-200 text-sm">|</span>
+          <input
+            type="date"
+            value={filters.startDate}
+            max={filters.endDate || undefined}
+            disabled={isLoading}
+            onChange={(e) => handleDateChange('startDate', e.target.value)}
+            aria-label="Start date"
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontSize: '13px',
+              color: filters.startDate ? '#254F22' : '#94a3b8',
+              fontWeight: filters.startDate ? 500 : 400,
+              fontFamily: 'Inter, system-ui, sans-serif',
+              cursor: 'pointer',
+              opacity: isLoading ? 0.4 : 1,
+            }}
+          />
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-neutral-400 font-medium whitespace-nowrap">
-              To
-            </span>
-            <input
-              type="date"
-              value={filters.endDate}
-              min={filters.startDate || undefined}
-              disabled={isLoading}
-              onChange={(e) => handleDateChange('endDate', e.target.value)}
-              aria-label="End date"
-              className={clsx(
-                'text-sm bg-transparent border-0 outline-none cursor-pointer',
-                'disabled:opacity-40 disabled:cursor-not-allowed',
-                filters.endDate
-                  ? 'text-brand-700 font-medium'
-                  : 'text-neutral-400',
-              )}
-            />
-          </div>
+          <span style={{
+            color: '#cbd5e1',
+            fontSize: '13px',
+            flexShrink: 0,
+          }}>
+            —
+          </span>
 
+          <span style={{
+            fontSize: '11px',
+            fontWeight: 500,
+            color: '#94a3b8',
+            fontFamily: 'Inter, system-ui, sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+          }}>
+            To
+          </span>
+
+          <input
+            type="date"
+            value={filters.endDate}
+            min={filters.startDate || undefined}
+            disabled={isLoading}
+            onChange={(e) => handleDateChange('endDate', e.target.value)}
+            aria-label="End date"
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontSize: '13px',
+              color: filters.endDate ? '#254F22' : '#94a3b8',
+              fontWeight: filters.endDate ? 500 : 400,
+              fontFamily: 'Inter, system-ui, sans-serif',
+              cursor: 'pointer',
+              opacity: isLoading ? 0.4 : 1,
+            }}
+          />
+
+          {/* Clear */}
           {hasAnyFilter && (
             <>
-              <div className="w-px self-stretch bg-neutral-100" />
+              <span style={{
+                width: '1px',
+                height: '18px',
+                backgroundColor: '#f1f5f9',
+                flexShrink: 0,
+                margin: '0 4px',
+              }} />
               <button
                 onClick={handleClearAll}
                 aria-label="Clear all filters"
-                className="flex items-center gap-1 text-xs text-neutral-400
-                           hover:text-neutral-600 transition-colors focus:outline-none
-                           whitespace-nowrap"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  color: '#94a3b8',
+                  fontFamily: 'Inter, system-ui, sans-serif',
+                  padding: '4px 0',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#475569'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
               >
                 <X size={11} strokeWidth={2} />
                 Clear
@@ -97,8 +175,15 @@ export function FilterBar({ filters, isLoading, onFiltersChange }) {
         </div>
       </div>
 
+      {/* Active filter chips */}
       {hasAnyFilter && (
-        <div className="mt-2 flex flex-wrap gap-1.5 px-0.5">
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '6px',
+          marginTop: '8px',
+          paddingLeft: '2px',
+        }}>
           {filters.search && (
             <Chip
               label={`"${filters.search}"`}
@@ -125,18 +210,33 @@ export function FilterBar({ filters, isLoading, onFiltersChange }) {
 
 function Chip({ label, onRemove }) {
   return (
-    <span
-      className="inline-flex items-center gap-1 h-6 px-2.5 rounded-full
-                 text-xs font-medium text-brand-700"
-      style={{
-        background: '#e0f0dc',
-        border: '1px solid #b8ddb2',
-      }}
-    >
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      height: '24px',
+      padding: '0 10px',
+      borderRadius: '99px',
+      backgroundColor: '#e0f0dc',
+      border: '1px solid #b8ddb2',
+      fontSize: '11px',
+      fontWeight: 500,
+      color: '#254F22',
+      fontFamily: 'Inter, system-ui, sans-serif',
+    }}>
       {label}
       <button
         onClick={onRemove}
-        className="text-brand-400 hover:text-brand-700 focus:outline-none ml-0.5"
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          color: '#5a9e50',
+          marginLeft: '2px',
+        }}
       >
         <X size={10} strokeWidth={2.5} />
       </button>
