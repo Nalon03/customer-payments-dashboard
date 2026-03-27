@@ -82,6 +82,9 @@ export default function App() {
 
       <main style={{
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0,
         width: '100%',
         maxWidth: '1280px',
         margin: '0 auto',
@@ -89,7 +92,7 @@ export default function App() {
         boxSizing: 'border-box',
       }}>
 
-        <div style={{ marginBottom: '28px' }}>
+        <div style={{ marginBottom: '28px', flexShrink: 0 }}>
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -151,12 +154,14 @@ export default function App() {
           </div>
         </div>
 
-        <FilterBar
-          filters={filters}
-          isLoading={isLoading}
-          onFiltersChange={setFilters}
-          onApplyDateRange={applyDateRange}
-        />
+        <div style={{ flexShrink: 0 }}>
+          <FilterBar
+            filters={filters}
+            isLoading={isLoading}
+            onFiltersChange={setFilters}
+            onApplyDateRange={applyDateRange}
+          />
+        </div>
 
         <PaymentsTable
           payments={payments}

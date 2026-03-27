@@ -128,8 +128,26 @@ export function PaymentsTable({
     onPageChange?.(totalPages)
   }
 
-  /** Empty result set: show `EmptyState` instead of the table shell (no column headers). */
   const showTableEmpty = !isLoading && !error && payments.length === 0
+
+  if (showTableEmpty) {
+    return (
+      <div
+        style={{
+          flex: 1,
+          width: '100%',
+          minHeight: 'min(480px, calc(100vh - 272px))',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+        }}
+      >
+        <EmptyState />
+      </div>
+    )
+  }
 
   return (
     <div style={{
@@ -140,23 +158,19 @@ export function PaymentsTable({
       boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
     }}>
 
-      {showTableEmpty ? (
-        <EmptyState />
-      ) : (
-        <>
-          <div className="sm:hidden" style={{
-            padding: '6px 12px',
-            borderBottom: '1px solid #f1f5f9',
-            fontSize: '11px',
-            color: MUTED,
-            textAlign: 'center',
-            fontFamily: 'Inter, system-ui, sans-serif',
-          }}>
-            Scroll horizontally to see all columns
-          </div>
+      <div className="sm:hidden" style={{
+        padding: '6px 12px',
+        borderBottom: '1px solid #f1f5f9',
+        fontSize: '11px',
+        color: MUTED,
+        textAlign: 'center',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }}>
+        Scroll horizontally to see all columns
+      </div>
 
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{
               width: '100%',
               borderCollapse: 'collapse',
               textAlign: 'left',
@@ -220,10 +234,8 @@ export function PaymentsTable({
                   ))
                 )}
               </tbody>
-            </table>
-          </div>
-        </>
-      )}
+        </table>
+      </div>
 
       {!isLoading && !error && totalCount > 0 && (
         <div
