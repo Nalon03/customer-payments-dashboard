@@ -40,12 +40,12 @@ function SortIcon({ columnKey, sort }) {
   const isActive = sort.key === columnKey
   if (isActive) {
     return sort.direction === 'asc'
-      ? <ChevronUp   size={12} color="white" strokeWidth={2.5} />
-      : <ChevronDown size={12} color="white" strokeWidth={2.5} />
+      ? <ChevronUp   size={13} color="white" strokeWidth={2.5} />
+      : <ChevronDown size={13} color="white" strokeWidth={2.5} />
   }
   return (
     <ChevronsUpDown
-      size={12}
+      size={13}
       strokeWidth={2}
       className="text-transparent group-hover:text-white/50 transition-colors"
     />
@@ -171,12 +171,12 @@ export function PaymentsTable({
                       onClick={col.sortable ? () => onSort(col.key) : undefined}
                       className={col.sortable ? 'group' : ''}
                       style={{
-                        padding: '10px 12px',
-                        fontSize: '11px',
+                        padding: '13px 14px',
+                        fontSize: '12px',
                         fontWeight: 600,
                         color: 'rgba(255,255,255,0.65)',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
+                        letterSpacing: '0.055em',
                         whiteSpace: 'nowrap',
                         userSelect: 'none',
                         cursor: col.sortable ? 'pointer' : 'default',
@@ -191,7 +191,7 @@ export function PaymentsTable({
                         if (col.sortable) e.currentTarget.style.color = 'rgba(255,255,255,0.65)'
                       }}
                     >
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                         {col.label}
                         {col.sortable && <SortIcon columnKey={col.key} sort={sort} />}
                       </span>

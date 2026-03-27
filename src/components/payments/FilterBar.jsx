@@ -14,38 +14,68 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
 
   const hasAnyFilter = filters.startDate || filters.endDate || filters.search
 
+  /** Separate surfaces per control (Fluent-style: distinct cards, 8px grid gap, neutral stroke). */
+  const filterSurface = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #e2e8f0',
+    borderRadius: '8px',
+    boxShadow: '0 1px 2px rgba(15, 23, 42, 0.06)',
+    minHeight: '44px',
+    padding: '0 12px',
+    boxSizing: 'border-box',
+  }
+
+  const fieldLabel = {
+    fontSize: '11px',
+    fontWeight: 600,
+    color: '#64748b',
+    fontFamily: 'Inter, system-ui, sans-serif',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    flexShrink: 0,
+  }
+
+  const dateInputStyle = (hasValue) => ({
+    border: 'none',
+    outline: 'none',
+    background: 'transparent',
+    fontSize: '13px',
+    color: hasValue ? '#254F22' : '#94a3b8',
+    fontWeight: hasValue ? 500 : 400,
+    fontFamily: 'Inter, system-ui, sans-serif',
+    cursor: 'pointer',
+    opacity: isLoading ? 0.4 : 1,
+    minWidth: 0,
+  })
+
   return (
-    <div style={{ marginBottom: '12px' }}>
+    <div style={{ marginBottom: '24px' }}>
 
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        border: '1px solid #e2e8f0',
-        borderRadius: '8px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        overflow: 'hidden',
-        flexWrap: 'wrap',
-      }}>
-
-        <div style={{
+      <div
+        role="toolbar"
+        aria-label="Filter payments"
+        style={{
           display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          flex: 1,
-          minWidth: '200px',
-          padding: '0 12px',
-          height: '42px',
-          borderRight: '1px solid #f1f5f9',
-        }}>
-          <Search size={14} color="#94a3b8" strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          alignItems: 'stretch',
+          flexWrap: 'wrap',
+          gap: '12px',
+        }}
+      >
+
+        <div style={{ ...filterSurface, flex: '1 1 220px' }}>
+          <Search size={14} color="#94a3b8" strokeWidth={1.75} style={{ flexShrink: 0 }} aria-hidden />
           <input
             type="search"
             placeholder="Search payments…"
             value={filters.search}
             onChange={(e) => onFiltersChange({ search: e.target.value })}
+            aria-label="Search payments"
             style={{
               flex: 1,
+              minWidth: 0,
               border: 'none',
               outline: 'none',
               background: 'transparent',
@@ -56,26 +86,8 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
           />
         </div>
 
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '0 12px',
-          height: '42px',
-          flexWrap: 'wrap',
-        }}>
-
-          <span style={{
-            fontSize: '11px',
-            fontWeight: 500,
-            color: '#94a3b8',
-            fontFamily: 'Inter, system-ui, sans-serif',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-          }}>
-            From
-          </span>
-
+        <div style={{ ...filterSurface, flex: '0 1 auto' }}>
+          <span style={fieldLabel}>From</span>
           <input
             type="date"
             value={filters.startDate}
@@ -83,38 +95,12 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
             disabled={isLoading}
             onChange={(e) => handleDateChange('startDate', e.target.value)}
             aria-label="Start date"
-            style={{
-              border: 'none',
-              outline: 'none',
-              background: 'transparent',
-              fontSize: '13px',
-              color: filters.startDate ? '#254F22' : '#94a3b8',
-              fontWeight: filters.startDate ? 500 : 400,
-              fontFamily: 'Inter, system-ui, sans-serif',
-              cursor: 'pointer',
-              opacity: isLoading ? 0.4 : 1,
-            }}
+            style={dateInputStyle(!!filters.startDate)}
           />
+        </div>
 
-          <span style={{
-            color: '#cbd5e1',
-            fontSize: '13px',
-            flexShrink: 0,
-          }}>
-            —
-          </span>
-
-          <span style={{
-            fontSize: '11px',
-            fontWeight: 500,
-            color: '#94a3b8',
-            fontFamily: 'Inter, system-ui, sans-serif',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-          }}>
-            To
-          </span>
-
+        <div style={{ ...filterSurface, flex: '0 1 auto' }}>
+          <span style={fieldLabel}>To</span>
           <input
             type="date"
             value={filters.endDate}
@@ -122,112 +108,38 @@ export function FilterBar({ filters, isLoading, onFiltersChange, onApplyDateRang
             disabled={isLoading}
             onChange={(e) => handleDateChange('endDate', e.target.value)}
             aria-label="End date"
-            style={{
-              border: 'none',
-              outline: 'none',
-              background: 'transparent',
-              fontSize: '13px',
-              color: filters.endDate ? '#254F22' : '#94a3b8',
-              fontWeight: filters.endDate ? 500 : 400,
-              fontFamily: 'Inter, system-ui, sans-serif',
-              cursor: 'pointer',
-              opacity: isLoading ? 0.4 : 1,
-            }}
+            style={dateInputStyle(!!filters.endDate)}
           />
-
-          {hasAnyFilter && (
-            <>
-              <span style={{
-                width: '1px',
-                height: '18px',
-                backgroundColor: '#f1f5f9',
-                flexShrink: 0,
-                margin: '0 4px',
-              }} />
-              <button
-                onClick={handleClearAll}
-                aria-label="Clear all filters"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  color: '#94a3b8',
-                  fontFamily: 'Inter, system-ui, sans-serif',
-                  padding: '4px 0',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#475569'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#94a3b8'}
-              >
-                <X size={11} strokeWidth={2} />
-                Clear
-              </button>
-            </>
-          )}
         </div>
+
+        {hasAnyFilter && (
+          <div style={{ ...filterSurface, flex: '0 0 auto', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={handleClearAll}
+              aria-label="Clear all filters"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: 500,
+                color: '#475569',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                padding: '4px 0',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#254F22' }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#475569' }}
+            >
+              <X size={14} strokeWidth={2} aria-hidden />
+              Clear
+            </button>
+          </div>
+        )}
       </div>
-
-      {(filters.startDate || filters.endDate) && (
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '5px',
-          marginTop: '6px',
-          paddingLeft: '0',
-        }}>
-          {filters.startDate && (
-            <Chip
-              label={`From: ${filters.startDate}`}
-              onRemove={() => handleDateChange('startDate', '')}
-            />
-          )}
-          {filters.endDate && (
-            <Chip
-              label={`To: ${filters.endDate}`}
-              onRemove={() => handleDateChange('endDate', '')}
-            />
-          )}
-        </div>
-      )}
     </div>
-  )
-}
-
-function Chip({ label, onRemove }) {
-  return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '4px',
-      height: '22px',
-      padding: '0 8px',
-      borderRadius: '99px',
-      backgroundColor: '#e0f0dc',
-      border: '1px solid #b8ddb2',
-      fontSize: '11px',
-      fontWeight: 500,
-      color: '#254F22',
-      fontFamily: 'Inter, system-ui, sans-serif',
-    }}>
-      {label}
-      <button
-        onClick={onRemove}
-        style={{
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: 0,
-          display: 'flex',
-          alignItems: 'center',
-          color: '#5a9e50',
-          marginLeft: '2px',
-        }}
-      >
-        <X size={10} strokeWidth={2.5} />
-      </button>
-    </span>
   )
 }

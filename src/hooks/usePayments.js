@@ -48,7 +48,12 @@ export function usePayments() {
 
   useLayoutEffect(() => {
     setUiPage(1)
-  }, [filters.startDate, filters.endDate, debouncedSearch])
+  }, [debouncedSearch])
+
+  useLayoutEffect(() => {
+    setUiPage(1)
+    setRowsPerPage(ROWS_PER_PAGE_OPTIONS[0])
+  }, [filters.startDate, filters.endDate])
 
   useLayoutEffect(() => {
     setUiPage(1)
@@ -67,8 +72,21 @@ export function usePayments() {
         searchQuery: debouncedSearch || undefined,
       })
       setRawPayments(payments)
-      const tc = meta.totalCount ?? payments.length
-      const stp = meta.totalPages ?? 0
+      const loaded = payments.length
+      let tc = meta?.totalCount ?? loaded
+      const hasFilter = Boolean(
+        filters.startDate || filters.endDate || debouncedSearch,
+      )
+   
+      if (
+        hasFilter &&
+        serverPageNum === 1 &&
+        loaded < SERVER_CHUNK_SIZE &&
+        tc > loaded
+      ) {
+        tc = loaded
+      }
+      const stp = meta?.totalPages ?? 0
       setTotalCount(tc)
       setServerPageSize(meta.pageSize ?? SERVER_CHUNK_SIZE)
       setServerTotalPages(stp > 0 ? stp : 1)
