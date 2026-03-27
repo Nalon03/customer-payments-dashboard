@@ -60,7 +60,7 @@ export function PaymentDetailModal({ paymentId, onClose }) {
         >
           <SummarySection detail={detail} />
 
-          {detail.Payee && <PayeeSection payee={detail.Payee} />}
+          <PayeeSection payee={detail.Payee} />
 
           {detail.ModeOfPayments?.length > 0 && (
             <ModeOfPaymentsSection modes={detail.ModeOfPayments} />
@@ -103,6 +103,14 @@ function isDetailValueEmpty(value) {
   if (value === null || value === undefined) return true
   if (typeof value === 'string' && value.trim() === '') return true
   return false
+}
+
+/** True when at least one payee field from the API has a value. */
+function payeeHasDisplayableData(payee) {
+  if (payee == null || typeof payee !== 'object') return false
+  return ['FullName', 'Phone', 'Email', 'Address'].some(
+    (key) => !isDetailValueEmpty(payee[key]),
+  )
 }
 
 function DetailRow({ label, value, highlight = false }) {
@@ -200,6 +208,16 @@ function AmountCard({ label, value, primary = false, warn = false }) {
 }
 
 function PayeeSection({ payee }) {
+  if (!payeeHasDisplayableData(payee)) {
+    return (
+      <Section title="Payee information" icon={User}>
+        <p className="py-1 text-sm leading-relaxed text-neutral-600">
+          No payee information for this payment.
+        </p>
+      </Section>
+    )
+  }
+
   return (
     <Section title="Payee information" icon={User}>
       <DetailRow label="Full name" value={payee.FullName} highlight />
